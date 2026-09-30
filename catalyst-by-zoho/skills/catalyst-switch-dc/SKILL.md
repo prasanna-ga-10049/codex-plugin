@@ -16,7 +16,7 @@ Use this skill when a Codex user needs to select or change the regional Catalyst
 - Show the exact endpoint before applying the change.
 - Do not edit the installed plugin's `.mcp.json`; it is managed plugin content.
 - Do not edit OAuth credentials.
-- After changing the configuration, make no further `ZohoMCP_*` calls in the current session. The old connection remains active until Codex restarts.
+- After changing the configuration, do not use the old Catalyst MCP connection. Connect to the selected DC's regional server before any further `ZohoMCP_*` calls.
 
 ## Procedure
 
@@ -34,7 +34,7 @@ Use this skill when a Codex user needs to select or change the regional Catalyst
    | JP | `https://catalyst.zohomcp.jp/mcp/message` |
    | UAE | `https://catalyst.zohomcp.ae/mcp/message` |
 
-3. Run `codex plugin list --json` and find the enabled entry whose `name` is `catalyst-by-zoho`. Use its `source.path` as `<installed-plugin-path>`. If more than one enabled entry matches, ask which installation to configure.
+3. Run `codex plugin list --json` and find the enabled entry whose `name` is `catalyst-by-zoho`. Use its `source.path` as `<installed-plugin-path>` and its `pluginId` as `<plugin-id>`. If more than one enabled entry matches, ask which installation to configure.
 4. Run the bundled helper with permission to update the user-level Codex configuration:
 
    ```bash
@@ -54,8 +54,9 @@ Use this skill when a Codex user needs to select or change the regional Catalyst
    node "<installed-plugin-path>/scripts/switch-dc.js" <DC> --plugin-id "<plugin-id>"
    ```
 
-6. Report the selected DC and endpoint. Tell the user to restart Codex and complete the browser OAuth flow for that regional endpoint.
-7. Stop. Do not perform any Catalyst MCP operation until a new session confirms that exactly one regional server is enabled and the `ZohoMCP_*` meta-tools are available.
+6. Check the selection with `node "<installed-plugin-path>/scripts/switch-dc.js" --status --plugin-id "<plugin-id>"`. Confirm that exactly the selected regional server (`catalyst-<dc-in-lowercase>`) is enabled.
+7. Connect to `catalyst-<dc-in-lowercase>` in Codex's MCP server controls, completing the browser OAuth flow for the selected endpoint if prompted. If the agent cannot connect the server directly, ask the user to connect that named server and wait for confirmation. Do not use a still-active connection to the previous DC.
+8. Once connected, confirm that the `ZohoMCP_*` meta-tools are available from the selected server before performing Catalyst MCP operations. If the connection cannot be verified in this session, stop and report the blocker; do not fall back to the old connection. Report the selected DC and endpoint. A Codex restart is not required.
 
 ## Check Current Selection
 

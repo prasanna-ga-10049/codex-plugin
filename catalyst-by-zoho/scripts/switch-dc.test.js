@@ -221,6 +221,8 @@ test('Codex installs the plugin with bundled regional MCP definitions', {
       }
     );
     assert.match(switchOutput, /data center set to IN/);
+    assert.match(switchOutput, /Connect to the catalyst-in MCP server/);
+    assert.match(switchOutput, /No restart is required/);
 
     const policies = readDcPolicies(
       fs.readFileSync(path.join(codexHome, 'config.toml'), 'utf8')

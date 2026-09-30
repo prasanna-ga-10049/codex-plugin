@@ -523,11 +523,11 @@ function main() {
     );
   } else if (dcSelection.state === 'missing') {
     lines.push(
-      'MCP REGIONAL BLOCKER: no Catalyst regional server is enabled in Codex plugin policy. Do not call any Catalyst/Zoho MCP tool. Ask the user to explicitly choose a DC, load catalyst-switch-dc, update the policy, and restart Codex.'
+      'MCP REGIONAL BLOCKER: no Catalyst regional server is enabled in Codex plugin policy. Do not call any Catalyst/Zoho MCP tool. Ask the user to explicitly choose a DC, load catalyst-switch-dc, update the policy, and connect the selected regional server.'
     );
   } else {
     lines.push(
-      `MCP REGIONAL BLOCKER: multiple Catalyst regional servers or plugin installations are enabled (${dcSelection.enabled.map((policy) => `${policy.pluginId}/${policy.dc}`).join(', ')}). Do not call any Catalyst/Zoho MCP tool. Resolve to exactly one explicit DC with catalyst-switch-dc, then restart Codex.`
+      `MCP REGIONAL BLOCKER: multiple Catalyst regional servers or plugin installations are enabled (${dcSelection.enabled.map((policy) => `${policy.pluginId}/${policy.dc}`).join(', ')}). Do not call any Catalyst/Zoho MCP tool. Resolve to exactly one explicit DC with catalyst-switch-dc, then connect the selected regional server.`
     );
   }
 
@@ -542,9 +542,9 @@ function main() {
     issues.unshift({
       level: 'blocker',
       user: dcSelection.state === 'missing'
-        ? 'No Catalyst MCP data center is selected. Choose US, EU, IN, AU, CA, SA, JP, or UAE with the catalyst-switch-dc skill, then restart Codex.'
-        : 'Multiple Catalyst MCP regional servers are enabled. Use the catalyst-switch-dc skill to select exactly one, then restart Codex.',
-      codex: 'Catalyst MCP regional policy is not valid. Do not invoke ZohoMCP_* tools until the user explicitly selects exactly one DC and restarts Codex.',
+        ? 'No Catalyst MCP data center is selected. Choose US, EU, IN, AU, CA, SA, JP, or UAE with the catalyst-switch-dc skill, then connect the selected regional server.'
+        : 'Multiple Catalyst MCP regional servers are enabled. Use the catalyst-switch-dc skill to select exactly one, then connect the selected regional server.',
+      codex: 'Catalyst MCP regional policy is not valid. Do not invoke ZohoMCP_* tools until the user explicitly selects exactly one DC and connects its regional server.',
     });
   }
 

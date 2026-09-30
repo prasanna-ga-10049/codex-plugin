@@ -68,7 +68,7 @@ Look for the `ZohoMCP_*` **meta-tools** in your tool list — `ZohoMCP_getSchema
      ```
   4. Tools with no required path variables (e.g. `List_All_Organizations`, `List_All_Projects`) can be called with `arguments: {}`.
 - **If the meta-tools are NOT present and the task creates resources, writes files, deploys, or reads project IDs** — **HARD STOP.** Do NOT write any code or create any files. Tell the user:
-  > "Zoho MCP needs to be connected before I can work with your Catalyst project. In Codex, load `catalyst-switch-dc`, explicitly select your account's regional DC, and restart. In other clients, load `catalyst-zoho-mcp` for setup."
+  > "Zoho MCP needs to be connected before I can work with your Catalyst project. In Codex, load `catalyst-switch-dc`, explicitly select your account's regional DC, and connect its regional server. In other clients, load `catalyst-zoho-mcp` for setup."
   Do not proceed until the `ZohoMCP_*` meta-tools are visible.
 
 **This gate applies only when the task writes Catalyst project files, deploys, reads project/environment IDs, or performs MCP project operations.** Skip it for informational questions (pricing, architecture advice, service selection, "what is Catalyst?", install help, SDK usage, or any question that doesn't require an initialized project).

@@ -296,8 +296,8 @@ function main(argv = process.argv.slice(2)) {
       `Catalyst MCP data center set to ${options.dc}.`,
       `Endpoint: ${DC_URLS[options.dc]}`,
       `Codex config: ${configPath}`,
-      'Restart Codex now. Do not run Catalyst MCP operations in this session; the old MCP connection remains active until restart.',
-      'After restart, complete OAuth for the selected regional endpoint.',
+      `Connect to the catalyst-${options.dc.toLowerCase()} MCP server in Codex and complete OAuth if prompted. No restart is required.`,
+      'Do not run Catalyst MCP operations through the old DC connection.',
     ].join('\n') + '\n'
   );
   return 0;

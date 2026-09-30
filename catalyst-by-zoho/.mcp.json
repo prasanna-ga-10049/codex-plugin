@@ -1,41 +1,41 @@
 {
-  "catalyst-us": {
-    "url": "https://catalyst.zohomcp.com/mcp/message",
+    "catalyst-us": {
+    "url": "https://zcatalyst.zohomcp.com/mcp/message",
     "auth": "oauth",
     "enabled": false
   },
   "catalyst-eu": {
-    "url": "https://catalyst.zohomcp.eu/mcp/message",
+    "url": "https://zcatalyst.zohomcp.eu/mcp/message",
     "auth": "oauth",
     "enabled": false
   },
   "catalyst-in": {
-    "url": "https://catalyst.zohomcp.in/mcp/message",
+    "url": "https://zcatalyst.zohomcp.in/mcp/message",
     "auth": "oauth",
     "enabled": false
   },
   "catalyst-au": {
-    "url": "https://catalyst.zohomcp.com.au/mcp/message",
+    "url": "https://zcatalyst.zohomcp.com.au/mcp/message",
     "auth": "oauth",
     "enabled": false
   },
   "catalyst-ca": {
-    "url": "https://catalyst.zohomcp.ca/mcp/message",
+    "url": "https://zcatalyst.zohomcp.ca/mcp/message",
     "auth": "oauth",
     "enabled": false
   },
   "catalyst-sa": {
-    "url": "https://catalyst.zohomcp.sa/mcp/message",
+    "url": "https://zcatalyst.zohomcp.sa/mcp/message",
     "auth": "oauth",
     "enabled": false
   },
   "catalyst-jp": {
-    "url": "https://catalyst.zohomcp.jp/mcp/message",
+    "url": "https://zcatalyst.zohomcp.jp/mcp/message",
     "auth": "oauth",
     "enabled": false
   },
   "catalyst-uae": {
-    "url": "https://catalyst.zohomcp.ae/mcp/message",
+    "url": "https://zcatalyst.zohomcp.ae/mcp/message",
     "auth": "oauth",
     "enabled": false
   }

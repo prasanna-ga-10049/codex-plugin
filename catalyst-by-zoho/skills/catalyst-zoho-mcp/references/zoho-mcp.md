@@ -28,7 +28,7 @@ For MCP client configs, append `/mcp/message` to the base URL.
 
 Replace `<dc-base-url>` with your DC base URL from the table above.
 
-**For Codex** — install or enable the Catalyst by Zoho plugin, then load `catalyst-switch-dc` and explicitly choose the account's DC. The plugin already bundles each literal regional URL, disabled by default. The switch skill enables exactly one through `~/.codex/config.toml` plugin policy. Restart Codex and complete OAuth after selecting or changing a DC.
+**For Codex** — install or enable the Catalyst by Zoho plugin, then load `catalyst-switch-dc` and explicitly choose the account's DC. The plugin already bundles each literal regional URL, disabled by default. The switch skill enables exactly one through `~/.codex/config.toml` plugin policy. Connect the selected regional MCP server and complete OAuth if prompted; no restart is required.
 
 Do not edit the installed plugin's `.mcp.json`; managed plugin files can be replaced during upgrades or cache reconciliation.
 
@@ -73,11 +73,11 @@ Windows: `%APPDATA%\Claude\claude_desktop_config.json`):
 }
 ```
 
-> **Using Codex?** Run `catalyst-switch-dc`, select one explicit region, and restart the task. Never continue MCP operations in the session that changed the DC.
+> **Using Codex?** Run `catalyst-switch-dc`, select one explicit region, and connect that regional server. Never use the old DC connection after switching.
 > **Using Claude Code?** Run `/switch-dc <region>` — it handles the Claude plugin caches automatically.
 
 **Step 3 — Authorize:**
-Restart your AI client. It will open a browser window and prompt you to log in to your Zoho account and grant access. This happens once — the token is stored automatically by the client.
+In Codex, connect the selected server without restarting. In other clients, restart as instructed by their setup guides. The client may open a browser window and prompt you to log in to your Zoho account and grant access. The token is stored automatically by the client.
 
 **Step 4 — Verify:**
 Look for the `ZohoMCP_*` **meta-tools** in your client's tool list — `ZohoMCP_getSchema`,

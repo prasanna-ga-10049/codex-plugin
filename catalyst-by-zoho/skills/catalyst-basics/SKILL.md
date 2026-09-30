@@ -35,7 +35,7 @@ metadata:
 
 **If MCP tools are NOT available:**
 - Prompt the user to connect Zoho MCP before proceeding
-- In Codex, load `catalyst-switch-dc`, require an explicit regional selection, and restart; in another MCP-capable client, guide them to that host's MCP settings
+- In Codex, load `catalyst-switch-dc`, require an explicit regional selection, and connect the selected server; in another MCP-capable client, guide them to that host's MCP settings
 - Fall back to reading `.catalystrc` and `catalyst.json` from the local project directory only as a last resort
 
 > **Never ask the user to manually look up IDs from the console** if MCP is connected. Every project detail — org ID, project ID, table IDs, ZAIDs, bucket names — is retrievable via MCP tools. Asking the user to hunt for IDs when MCP is available wastes time and introduces copy-paste errors.
