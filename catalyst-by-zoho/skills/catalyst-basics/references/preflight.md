@@ -39,13 +39,12 @@ operations to the wrong place; this gate catches it up front.
 
 ## Step 0 — MCP connectivity
 
-Confirm the `ZohoMCP_*` **meta-tools** are present in the tool list — `ZohoMCP_getSchema`,
-`ZohoMCP_executeTool`, `ZohoMCP_listTools`, `ZohoMCP_getFeatures`. Their presence is the "MCP is
-connected" signal. (The `CatalystbyZoho_*` names are **not** shown as tools — they are `tool_name`
-values you pass to `ZohoMCP_executeTool`; see `../../catalyst-zoho-mcp/references/zoho-mcp.md` →
-"How to Call Tools Correctly".) If the `ZohoMCP_*` meta-tools are absent → **STOP**, do not
-scaffold code or run CLI commands. Guide the user through MCP setup (see
-`../../catalyst-zoho-mcp/references/zoho-mcp.md`) and resume only once they appear.
+Confirm the selected server exposes `CatalystbyZoho_*` tools in the tool list. When the tools
+are visible, call them directly with the argument schema supplied by the client. Other Zoho MCP
+servers may instead expose `ZohoMCP_*` meta-tools; only for those servers use `ZohoMCP_getSchema` and
+`ZohoMCP_executeTool` (see `../../catalyst-zoho-mcp/references/zoho-mcp.md`). If neither tool
+family is available from the selected server → **STOP**, do not scaffold code or run CLI commands.
+Guide the user through MCP setup and resume only when the server's tools are available.
 
 > **Confirm the data center (DC) once — before the first MCP call.** Data centers are isolated: a
 > session connected to the wrong DC sees a *different* set of orgs/projects and silently operates on
@@ -84,9 +83,8 @@ with the project ID and org read from `.catalystrc`:
   re-init the CLI against the MCP's org. Do **not** silently fall back to `List_All_Projects` and
   operate on a different project.
 
-> If the exact tool name/arguments differ in the connected server, discover them first with
-> `ZohoMCP_getSchema` (see `../../catalyst-zoho-mcp/references/zoho-mcp.md` → "always getSchema
-> before executeTool"), then call it.
+> Use the connected tool's exposed schema for its arguments. Call `ZohoMCP_getSchema` first only
+> when using a server that exposes the dynamic `ZohoMCP_*` meta-tools.
 
 ### If `.catalystrc` is absent
 

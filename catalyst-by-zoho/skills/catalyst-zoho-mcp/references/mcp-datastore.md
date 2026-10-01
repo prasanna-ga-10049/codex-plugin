@@ -1,6 +1,6 @@
 # DataStore Operations via MCP
 
-Invoke the `CatalystbyZoho_*` DataStore operations via `ZohoMCP_executeTool` (passing the operation name as `tool_name`; fetch its schema first with `ZohoMCP_getSchema`) to create and manage DataStore tables and columns without writing SDK code. The `CatalystbyZoho_*` names are `tool_name` values, not directly-callable tools.
+If `CatalystbyZoho_*` DataStore tools are visible, call them directly using their exposed argument schemas. If only `ZohoMCP_*` meta-tools are available, pass the operation name to `ZohoMCP_executeTool` after fetching its schema with `ZohoMCP_getSchema`.
 
 ## Pre-flight
 

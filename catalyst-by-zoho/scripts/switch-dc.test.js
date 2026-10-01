@@ -163,6 +163,32 @@ test('session hook resolves exactly one enabled regional policy', () => {
   }
 });
 
+test('session hook describes upfront tool discovery for the selected region', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'catalyst-dc-context-test-'));
+  try {
+    fs.writeFileSync(path.join(dir, 'config.toml'), updateDcPolicy('', PLUGIN_ID, 'IN'));
+    fs.writeFileSync(path.join(dir, '.catalystrc'), JSON.stringify({
+      projects: [{ id: '123', env: [{ id: '456', name: 'Development' }] }],
+    }));
+    const output = JSON.parse(execFileSync(process.execPath, [
+      path.join(PLUGIN_ROOT, 'hooks', 'catalyst-context.js'),
+    ], {
+      cwd: dir,
+      env: { ...process.env, CODEX_HOME: dir },
+      input: JSON.stringify({ cwd: dir }),
+      encoding: 'utf8',
+    }));
+    const context = output.hookSpecificOutput.additionalContext;
+    assert.match(context, /verify its CatalystbyZoho_\* direct tools before use/);
+    assert.match(context, /server name is catalyst-<dc>/);
+    assert.match(context, /zcatalyst\.zohomcp\.\* is the URL hostname pattern, not a server name/);
+    assert.doesNotMatch(context, /selected zcatalyst\.zohomcp\.\* server/);
+    assert.doesNotMatch(context, /CatalystbyZoho_\* names are tool_name values/);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('session hook rejects enabled regions across multiple plugin installations', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'catalyst-dc-hook-test-'));
   const previousCodexHome = process.env.CODEX_HOME;

@@ -8,14 +8,14 @@ const { execFileSync } = require('child_process');
 
 const PLUGIN_NAME = 'catalyst-by-zoho';
 const DC_URLS = Object.freeze({
-  US: 'https://catalyst.zohomcp.com/mcp/message',
-  EU: 'https://catalyst.zohomcp.eu/mcp/message',
-  IN: 'https://catalyst.zohomcp.in/mcp/message',
-  AU: 'https://catalyst.zohomcp.com.au/mcp/message',
-  CA: 'https://catalyst.zohomcp.ca/mcp/message',
-  SA: 'https://catalyst.zohomcp.sa/mcp/message',
-  JP: 'https://catalyst.zohomcp.jp/mcp/message',
-  UAE: 'https://catalyst.zohomcp.ae/mcp/message',
+  US: 'https://zcatalyst.zohomcp.com/mcp/message',
+  EU: 'https://zcatalyst.zohomcp.eu/mcp/message',
+  IN: 'https://zcatalyst.zohomcp.in/mcp/message',
+  AU: 'https://zcatalyst.zohomcp.com.au/mcp/message',
+  CA: 'https://zcatalyst.zohomcp.ca/mcp/message',
+  SA: 'https://zcatalyst.zohomcp.sa/mcp/message',
+  JP: 'https://zcatalyst.zohomcp.jp/mcp/message',
+  UAE: 'https://zcatalyst.zohomcp.ae/mcp/message',
 });
 
 const SERVER_TO_DC = Object.freeze(

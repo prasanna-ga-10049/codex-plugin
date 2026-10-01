@@ -13,7 +13,7 @@ This is the routing layer. Load the most specific matching skill — do not answ
 
 ## Philosophy
 
-- **Prefer MCP over asking — for *resource* IDs, not for the org/project itself.** If the `ZohoMCP_*` meta-tools are available, use them to fetch table IDs, ZAIDs, bucket names, etc. (the `CatalystbyZoho_*` operations are invoked *through* them — see below); never ask the user to copy those from the console.
+- **Prefer MCP over asking — for *resource* IDs, not for the org/project itself.** If the selected server's `CatalystbyZoho_*` tools (or dynamic-server `ZohoMCP_*` meta-tools) are available, use them to fetch table IDs, ZAIDs, bucket names, etc.; never ask the user to copy those from the console.
 - **🔒 NEVER assume the org or project.** The active org/project must always be *resolved* from an authoritative source (`.catalystrc`, or an MCP list the user confirms) — never guessed, inferred from the directory name, carried over from a past session, or auto-picked because "only one showed up." A single project in the list is **not** permission to select it silently — confirm it. **If no project is initialized (`.catalystrc` absent) or the project cannot be resolved, STOP and ask the user which project (and org) to work in** before any CLI command, MCP resource call, scaffold, or deploy. This is the one place the "prefer MCP over asking" default does not apply — see the Golden Rule in `../catalyst-basics/references/preflight.md`.
 - **Default to Development (via Local first).** Iterate against Local, then deploy to the Development environment — never target Production unless the user explicitly says "production" or "deploy to prod". Production is reached only by migrating a verified Development setup up, not by direct deploys or resource creation.
 - **"Build an app" means Slate + Function by default.** When a user says "build an app", "create an app", or "make a simple app" without specifying backend-only, the default output is a **Slate frontend + Advanced I/O function backend**. Do NOT build only a function and call it an app. If the user's intent is clearly backend-only (e.g. "build an API", "write a function"), skip Slate.
@@ -29,7 +29,7 @@ This is the routing layer. Load the most specific matching skill — do not answ
 ## How It Works
 
 1. **Pre-flight** — Check that `.catalystrc` and `catalyst.json` exist. If missing, use MCP to get org/project IDs and run `catalyst init --org <orgId> -p <projectId> -ni`. Never use interactive `catalyst init`.
-2. **MCP check** — Look for the `ZohoMCP_*` meta-tools (`ZohoMCP_getSchema`, `ZohoMCP_executeTool`, `ZohoMCP_listTools`, `ZohoMCP_getFeatures`). Their presence is the "MCP connected" signal — the `CatalystbyZoho_*` names never appear as tools. If present, use MCP to fetch org/project IDs instead of asking the user.
+2. **MCP check** — Look for directly callable `CatalystbyZoho_*` tools from the selected server. Dynamic-discovery servers instead expose `ZohoMCP_*` meta-tools. Check the available tools and follow the canonical pre-flight before resolving org/project IDs.
 3. **Route** — Match the query to the most specific service in the routing table below.
 4. **Load lazily** — Read ONLY the single reference file needed for the current step. Do NOT preload multiple skills upfront. For "build an app" requests: (a) assume **Slate frontend + AIO function** unless the user says backend-only, (b) sketch the architecture briefly and confirm with the user before building, (c) then load one reference file per service as you write each part — `catalyst-slate` for the frontend, `catalyst-functions` for the backend.
 5. **Cost check** — Only load `catalyst-pricing` if the user specifically asks about cost, or if the plan includes AppSail, Stratus, or other paid-tier services. Skip for basic Functions + DataStore projects (likely free tier).
@@ -47,29 +47,10 @@ Use this skill for queries containing: Catalyst, zcatalyst, AppSail, Data Store,
 > **The canonical readiness sequence lives in `../catalyst-basics/references/preflight.md`.** It is the single source of truth for establishing + reconciling org/project and environment awareness. Follow it for the full flow; the summary below only covers the MCP-connectivity signal and how to call the tools.
 
 **Step 1 — MCP check (do this before anything else for infrastructure tasks):**
-Look for the `ZohoMCP_*` **meta-tools** in your tool list — `ZohoMCP_getSchema`, `ZohoMCP_executeTool`, `ZohoMCP_listTools`, `ZohoMCP_getFeatures`. Their presence is the "MCP connected" signal. The `CatalystbyZoho_*` names are **not** shown as tools — they are `tool_name` values you pass to `ZohoMCP_executeTool`.
-- **If the meta-tools are present** — use MCP to fetch org/project IDs. Never ask the user to copy IDs from the console.
-  **How to call MCP tools correctly:**
-  1. `ZohoMCP_getSchema` takes `query_params`, NOT `body`:
-     ```
-     ZohoMCP_getSchema({ query_params: { tool_name: "CatalystbyZoho_List_All_Projects" } })
-     ```
-  2. Always call `ZohoMCP_getSchema` first for any `CatalystbyZoho_*` tool — never guess the argument shape. Many tools require `path_variables` (e.g. `project_id`) that are invisible without the schema.
-  3. `ZohoMCP_executeTool` takes a `body` with this shape:
-     ```
-     ZohoMCP_executeTool({ body: {
-       tool_name: "CatalystbyZoho_List_All_Functions",
-       arguments: {
-         path_variables: { project_id: "31594000000127002" },
-         headers: {},
-         body: {}
-       }
-     }})
-     ```
-  4. Tools with no required path variables (e.g. `List_All_Organizations`, `List_All_Projects`) can be called with `arguments: {}`.
-- **If the meta-tools are NOT present and the task creates resources, writes files, deploys, or reads project IDs** — **HARD STOP.** Do NOT write any code or create any files. Tell the user:
+If `CatalystbyZoho_*` tools are visible, call them directly with their exposed argument schemas. If only `ZohoMCP_*` meta-tools are available, use `ZohoMCP_getSchema` before `ZohoMCP_executeTool`; see `../catalyst-zoho-mcp/references/zoho-mcp.md` for that flow. Use the available tools to fetch resource IDs, but confirm the chosen org/project per the canonical gate.
+- **If neither tool family is available from the selected server and the task creates resources, writes files, deploys, or reads project IDs** — **HARD STOP.** Do NOT write any code or create any files. Tell the user:
   > "Zoho MCP needs to be connected before I can work with your Catalyst project. In Codex, load `catalyst-switch-dc`, explicitly select your account's regional DC, and connect its regional server. In other clients, load `catalyst-zoho-mcp` for setup."
-  Do not proceed until the `ZohoMCP_*` meta-tools are visible.
+  Do not proceed until the selected server's tools are visible.
 
 **This gate applies only when the task writes Catalyst project files, deploys, reads project/environment IDs, or performs MCP project operations.** Skip it for informational questions (pricing, architecture advice, service selection, "what is Catalyst?", install help, SDK usage, or any question that doesn't require an initialized project).
 

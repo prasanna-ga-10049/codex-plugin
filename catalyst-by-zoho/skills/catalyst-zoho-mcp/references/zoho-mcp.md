@@ -1,32 +1,21 @@
 > **Zoho MCP** lets AI assistants (Codex, Claude, GitHub Copilot, Cursor, etc.) manage Catalyst infrastructure
-> by invoking `CatalystbyZoho_*` operations through the `ZohoMCP_executeTool` meta-tool. No console
-> clicks or REST API calls needed. (The `CatalystbyZoho_*` names are never callable tools on their
-> own — see "How to Call Tools Correctly" below.)
+> by invoking visible `CatalystbyZoho_*` tools directly on upfront-discovery servers. No console
+> clicks or REST API calls needed. Servers using dynamic discovery expose `ZohoMCP_*` meta-tools
+> instead; see "How to Call Tools Correctly" below.
 
 ---
 
-## Setup — Global MCP Server
+## Setup — Regional MCP Server
 
-**Step 1 — Choose your Data Center (DC) URL:**
+**Step 1 — Choose your Data Center (DC):**
 
-The Catalyst global MCP endpoint changes by data center. Use the URL that matches your Zoho account's DC.
+The Catalyst regional MCP endpoint changes by data center. Select the DC that matches your Zoho account. In the bundled plugin's `.mcp.json`, each key (for example, `catalyst-in`) is a **server name** used in MCP controls and Codex policy; its `url` is the **endpoint** whose hostname identifies the regional domain. `CatalystbyZoho_*` refers to **tools**, not servers. Do not copy an endpoint from another region.
 
-| DC | Region | Global MCP base URL |
-|------|------|------|
-| US | United States | `https://catalyst.zohomcp.com` |
-| EU | Europe | `https://catalyst.zohomcp.eu` |
-| IN | India | `https://catalyst.zohomcp.in` |
-| AU | Australia | `https://catalyst.zohomcp.com.au` |
-| CA | Canada | `https://catalyst.zohomcp.ca` |
-| SA | Saudi Arabia | `https://catalyst.zohomcp.sa` |
-| JP | Japan | `https://catalyst.zohomcp.jp` |
-| UAE | United Arab Emirates | `https://catalyst.zohomcp.ae` |
-
-For MCP client configs, append `/mcp/message` to the base URL.
+Supported DCs: US, EU, IN, AU, CA, SA, JP, UAE.
 
 **Step 2 — Add your DC-specific URL to Codex or your AI client:**
 
-Replace `<dc-base-url>` with your DC base URL from the table above.
+For a manual client setup, copy the full URL for your selected regional server from the bundled `.mcp.json` (or use your own personal MCP server URL). Replace `<selected-mcp-url>` below with that full URL; do not append another path.
 
 **For Codex** — install or enable the Catalyst by Zoho plugin, then load `catalyst-switch-dc` and explicitly choose the account's DC. The plugin already bundles each literal regional URL, disabled by default. The switch skill enables exactly one through `~/.codex/config.toml` plugin policy. Connect the selected regional MCP server and complete OAuth if prompted; no restart is required.
 
@@ -41,7 +30,7 @@ Windows: `%APPDATA%\Claude\claude_desktop_config.json`):
   "mcpServers": {
     "catalyst-by-zoho": {
       "type": "streamable-http",
-      "url": "<dc-base-url>/mcp/message"
+      "url": "<selected-mcp-url>"
     }
   }
 }
@@ -54,7 +43,7 @@ Windows: `%APPDATA%\Claude\claude_desktop_config.json`):
   "mcpServers": {
     "catalyst-by-zoho": {
       "type": "streamable-http",
-      "url": "<dc-base-url>/mcp/message"
+      "url": "<selected-mcp-url>"
     }
   }
 }
@@ -67,23 +56,22 @@ Windows: `%APPDATA%\Claude\claude_desktop_config.json`):
   "servers": {
     "catalyst-by-zoho": {
       "type": "http",
-      "url": "<dc-base-url>/mcp/message"
+      "url": "<selected-mcp-url>"
     }
   }
 }
 ```
 
 > **Using Codex?** Run `catalyst-switch-dc`, select one explicit region, and connect that regional server. Never use the old DC connection after switching.
-> **Using Claude Code?** Run `/switch-dc <region>` — it handles the Claude plugin caches automatically.
+> **Using Claude Code?** Select and connect the chosen regional server in the client's MCP controls; do not edit installed plugin caches.
 
 **Step 3 — Authorize:**
 In Codex, connect the selected server without restarting. In other clients, restart as instructed by their setup guides. The client may open a browser window and prompt you to log in to your Zoho account and grant access. The token is stored automatically by the client.
 
 **Step 4 — Verify:**
-Look for the `ZohoMCP_*` **meta-tools** in your client's tool list — `ZohoMCP_getSchema`,
-`ZohoMCP_executeTool`, `ZohoMCP_listTools`, `ZohoMCP_getFeatures`. Their presence means MCP is
-connected. (The `CatalystbyZoho_*` operations are *not* listed as tools — they are `tool_name`
-values you pass to `ZohoMCP_executeTool`.) Done.
+Look for `CatalystbyZoho_*` tools from the selected regional server in your client's tool list.
+Their presence means the upfront-discovery server is available. If you configured a different,
+dynamic-discovery server, look for `ZohoMCP_*` meta-tools instead.
 
 ---
 
@@ -95,7 +83,9 @@ Before your first MCP tool call, complete the canonical **workspace readiness ga
 
 ## How to Call Tools Correctly
 
-**Rule: always call `ZohoMCP_getSchema` before `ZohoMCP_executeTool` for any tool you haven't called before.** Most `CatalystbyZoho_*` tools require `path_variables` (e.g. `project_id`) that are invisible without the schema — guessing the arguments causes "Mandatory path variable not present" errors.
+**When `CatalystbyZoho_*` tools are visible (upfront discovery):** Call the selected server's tool directly with the arguments described by its exposed schema. Do not wait for `ZohoMCP_*` meta-tools or wrap the call in `ZohoMCP_executeTool`. If an operation is not exposed, do not assume it exists; check the selected server's available tools.
+
+**For a dynamic-discovery server only:** Call `ZohoMCP_getSchema` before `ZohoMCP_executeTool` for any operation you haven't called before. The following steps apply only to that server type.
 
 ### Step 1 — Get the schema
 
@@ -136,7 +126,7 @@ Tools with no required path variables (e.g. `List_All_Organizations`, `List_All_
 
 ## Available Tools
 
-The operations available depend on which Catalyst tools are configured in your Zoho MCP server. Each is invoked by passing its name as the `tool_name` argument to `ZohoMCP_executeTool` — the names below are those `tool_name` values, not tools that appear in your client's tool list. Confirmed operation names:
+The operations available depend on the connected Zoho MCP server. When listed in the client, the names below are directly callable tools. On dynamic-discovery servers, they are `tool_name` values passed to `ZohoMCP_executeTool`. Example operation names:
 
 | Tool | Description |
 |------|-------------|
@@ -147,7 +137,7 @@ The operations available depend on which Catalyst tools are configured in your Z
 | `CatalystbyZoho_List_All_Jobpools` | List all Job Scheduling pools in the project |
 | `CatalystbyZoho_Create_Job_Pool` | Create a new Job Scheduling pool |
 
-For the full catalog of available operations, call `ZohoMCP_listTools` (or `ZohoMCP_getFeatures`) after connecting — these enumerate every `CatalystbyZoho_*` `tool_name` the server exposes. Do **not** expect the `CatalystbyZoho_*` names to appear in your AI client's visible tool list; only the `ZohoMCP_*` meta-tools appear there.
+For upfront discovery, inspect the selected server's visible `CatalystbyZoho_*` tools. For dynamic discovery only, call `ZohoMCP_listTools` (or `ZohoMCP_getFeatures`) to enumerate operation names.
 
 ---
 
@@ -168,7 +158,7 @@ When an AI agent needs to create or manage Catalyst infrastructure (tables, cach
 Need to create Catalyst infrastructure?
         │
         ▼
-Are the ZohoMCP_* meta-tools present in tool list?
+Are CatalystbyZoho_* tools (or dynamic-server ZohoMCP_* meta-tools) present?
         │
    YES──┘──NO
    │          │
@@ -196,7 +186,7 @@ tools      (see Setup section above)
 
 ✅ **MCP (two calls — table, then its columns)**
 
-`Create_Table` takes only `table_name` + `table_scope`; columns are a **separate** `Create_Column` call (a batch array) against the new table's ID. Both go through `ZohoMCP_executeTool` with `projectId` + `Catalyst-org` + `Environment`.
+`Create_Table` takes only `table_name` + `table_scope`; columns are a **separate** `Create_Column` call (a batch array) against the new table's ID. Use the exposed schema for the direct tools. The following wrapper examples apply **only to dynamic-discovery servers**; they include `projectId` + `Catalyst-org` + `Environment`.
 
 ```javascript
 // 1) Create the table (no inline columns)
@@ -264,7 +254,7 @@ The AI calls `CatalystbyZoho_List_All_Tables` then describes the schema.
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| `ZohoMCP_*` meta-tools not showing | MCP server not connected or URL wrong | Verify URL in client config; restart client after saving. (The `CatalystbyZoho_*` names never appear in the tool list — only the `ZohoMCP_*` meta-tools do.) |
+| Expected `CatalystbyZoho_*` tools not showing | Regional server not connected or URL wrong | Verify the selected DC's URL and connection; complete OAuth if prompted. Dynamic-discovery servers show `ZohoMCP_*` instead. |
 | `PERMISSION_NEEDED` on table operations | Project context not set | Run `CatalystbyZoho_List_All_Organizations` → `List_All_Projects` first |
 | Operations applying to wrong project | Skipped pre-flight | Always run the org → project → verify sequence before any operation |
 | MCP server shows red/error *(Option B)* | Token expired or URL invalid | Regenerate the authenticated URL at mcp.zoho.com |

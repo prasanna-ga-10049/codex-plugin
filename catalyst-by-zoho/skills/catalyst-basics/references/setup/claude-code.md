@@ -19,15 +19,15 @@ First complete the **Personal MCP Setup** in `setup-common.md` to get your Zoho 
   "mcpServers": {
     "catalyst-by-zoho": {
       "type": "streamable-http",
-      "url": "https://catalyst.zohomcp.com/mcp/<auth-token>/message"
+      "url": "https://zcatalyst.zohomcp.com/mcp/<auth-token>/message"
     }
   }
 }
 ```
 
-The simplest path is to copy the `.mcp.json` file from this repo into your project root and replace the `<YOUR_ZOHO_MCP_URL>` placeholder. Alternatively, run `claude mcp add` to register the server interactively.
+Alternatively, run `claude mcp add` to register your personal server interactively. Do not copy the bundled multi-region Codex `.mcp.json` as a personal-server config.
 
-After saving, restart Claude Code (or run `/mcp` to reconnect). Confirm MCP is connected by looking for the `ZohoMCP_*` meta-tools (`ZohoMCP_getSchema`, `ZohoMCP_executeTool`, `ZohoMCP_listTools`, `ZohoMCP_getFeatures`) in the tool list. (The `CatalystbyZoho_*` operations are not listed as tools — they are `tool_name` values you pass to `ZohoMCP_executeTool`.)
+After saving, restart Claude Code (or run `/mcp` to reconnect). If the server exposes `ZohoMCP_*` meta-tools, use `ZohoMCP_getSchema` before `ZohoMCP_executeTool`. If it exposes `CatalystbyZoho_*` tools instead, call those directly.
 
 ## Common Errors (Claude Code)
 

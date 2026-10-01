@@ -12,17 +12,17 @@ Codex loads these skills from the installed Catalyst by Zoho plugin. To verify:
 
 ## MCP Setup — Select a Data Center
 
-Catalyst MCP is region-specific for compliance. The plugin bundles disabled definitions for `US`, `EU`, `IN`, `AU`, `CA`, `SA`, `JP`, and `UAE`; it never guesses which region to use.
+Catalyst MCP is region-specific for compliance. The plugin bundles disabled definitions for `US`, `EU`, `IN`, `AU`, `CA`, `SA`, `JP`, and `UAE`; it never guesses which region to use. Each `catalyst-<dc-in-lowercase>` key in the bundled `.mcp.json` is a server name, while its `url` is the regional endpoint (including its domain). Connect by server name, not hostname.
 
 1. Ask Codex: **"Switch Catalyst MCP to `<DC>`."**
 2. Codex loads `catalyst-switch-dc`, shows the exact regional endpoint, and updates only the plugin policy in `~/.codex/config.toml`.
 3. Connect the selected `catalyst-<dc-in-lowercase>` MCP server in Codex; do not use the previous DC's connection.
 4. Complete the browser OAuth flow for the selected regional endpoint if prompted.
-5. Confirm the `ZohoMCP_*` meta-tools (`ZohoMCP_getSchema`, `ZohoMCP_executeTool`, `ZohoMCP_listTools`, `ZohoMCP_getFeatures`) are available from the selected server before using Catalyst MCP. No restart is required.
+5. Confirm the selected regional server exposes `CatalystbyZoho_*` tools directly before using Catalyst MCP. No restart is required.
 
 To inspect the current selection, ask Codex: **"Show my Catalyst MCP DC."**
 
-The `CatalystbyZoho_*` operations are not listed as tools. They are `tool_name` values passed to `ZohoMCP_executeTool`.
+When the selected server exposes `CatalystbyZoho_*` tools, call them directly with their argument schemas. If it exposes only `ZohoMCP_*` meta-tools, follow the dynamic-discovery flow in the MCP guide.
 
 ## Common Errors (Codex)
 
@@ -33,5 +33,5 @@ See `setup-common.md` for errors common to all clients. Codex-specific:
 | Catalyst skills not appearing | Plugin not installed or the task was opened before installation | Install or update the Catalyst by Zoho plugin, then open a new Codex task |
 | No Catalyst MCP DC selected | Every bundled regional server is disabled | Ask Codex to switch Catalyst MCP to the explicit account DC, then connect its regional server |
 | Multiple Catalyst MCP DCs enabled | Conflicting plugin policy | Run `catalyst-switch-dc` again; it disables every region except the selected one |
-| Duplicate `ZohoMCP_*` tool sets after upgrading | The former app-backed connection is still connected | Disconnect the legacy Catalyst app/connector in Codex settings, then restart |
-| MCP tools not appearing | Selected regional server is not connected or OAuth is incomplete | Connect the selected server, complete browser authorization, then verify the `ZohoMCP_*` tools |
+| Duplicate Catalyst MCP tool sets after upgrading | The former app-backed connection is still connected | Disconnect the legacy Catalyst app/connector in Codex settings, then restart |
+| MCP tools not appearing | Selected regional server is not connected or OAuth is incomplete | Connect the selected server, complete browser authorization, then verify its `CatalystbyZoho_*` tools |

@@ -37,7 +37,7 @@ Before asking your AI assistant to write Catalyst code, ensure:
 - [ ] `catalyst login --dc <dc> -ni` has been run in your terminal
 - [ ] `catalyst init --org <orgId> -p <projectId> -ni` has been run in the project directory
 - [ ] `.catalystrc` and `catalyst.json` exist at the project root
-- [ ] (Optional) Zoho MCP is connected and the `ZohoMCP_*` meta-tools appear in your assistant (the `CatalystbyZoho_*` operations are invoked via `ZohoMCP_executeTool`, not shown as tools)
+- [ ] (Optional) Zoho MCP is connected: either `CatalystbyZoho_*` tools or `ZohoMCP_*` meta-tools appear in your assistant, depending on the server's discovery mode
 
 ## Common Errors (all IDEs)
 

@@ -510,16 +510,16 @@ function main() {
   if (mcp.found) {
     const endpoints = mcp.definitions.map((definition) => definition.url).filter(Boolean);
     lines.push(
-      `MCP: ${mcp.definitions.length} Catalyst regional server definition(s) were found via ${mcp.source} .mcp.json${endpoints.length ? ` (${endpoints.join(', ')})` : ''}. Definitions are not proof of enablement, connectivity, or authentication. Effective regional enablement is read from Codex plugin policy in ~/.codex/config.toml. Before the first MCP resource operation confirm the ZohoMCP_* meta-tools (ZohoMCP_getSchema, ZohoMCP_executeTool, ZohoMCP_listTools, ZohoMCP_getFeatures) are present in the tool list — that is the connectivity signal; the CatalystbyZoho_* names are tool_name values passed to ZohoMCP_executeTool, never visible tools.`
+      `MCP: ${mcp.definitions.length} Catalyst regional server definition(s) were found via ${mcp.source} .mcp.json${endpoints.length ? ` (${endpoints.join(', ')})` : ''}. Definitions are not proof of enablement, connectivity, or authentication. Effective regional enablement is read from Codex plugin policy in ~/.codex/config.toml. Before the first MCP resource operation confirm the selected regional server exposes CatalystbyZoho_* tools directly in the tool list; use their exposed argument schemas. ZohoMCP_* meta-tools are only for dynamic-discovery servers.`
     );
   } else {
     lines.push(
-      'MCP: no Catalyst server definition was found in the .mcp.json files this hook can see (project or plugin). This is NOT authoritative — it may be configured in global/user settings. Before any MCP resource operation, confirm the ZohoMCP_* meta-tools are present. If they are absent, load the catalyst-switch-dc skill and guide the user through explicit regional setup.'
+      'MCP: no Catalyst server definition was found in the .mcp.json files this hook can see (project or plugin). This is NOT authoritative — it may be configured in global/user settings. Before any MCP resource operation, confirm the selected server exposes CatalystbyZoho_* direct tools or ZohoMCP_* dynamic-discovery meta-tools. If neither is present, load the catalyst-switch-dc skill and guide the user through explicit regional setup.'
     );
   }
   if (dcSelection.state === 'valid') {
     lines.push(
-      `MCP regional policy is valid: exactly one server is enabled for ${dcSelection.dc} (${dcSelection.url}). This does not prove the current session loaded that server; verify the ZohoMCP_* meta-tools before use.`
+      `MCP regional policy is valid: exactly one server is enabled for ${dcSelection.dc} (server name: ${dcSelection.server}; endpoint URL: ${dcSelection.url}). The server name is catalyst-<dc> (for example, catalyst-in); zcatalyst.zohomcp.* is the URL hostname pattern, not a server name. This does not prove the current session loaded that server; verify its CatalystbyZoho_* direct tools before use.`
     );
   } else if (dcSelection.state === 'missing') {
     lines.push(
@@ -544,7 +544,7 @@ function main() {
       user: dcSelection.state === 'missing'
         ? 'No Catalyst MCP data center is selected. Choose US, EU, IN, AU, CA, SA, JP, or UAE with the catalyst-switch-dc skill, then connect the selected regional server.'
         : 'Multiple Catalyst MCP regional servers are enabled. Use the catalyst-switch-dc skill to select exactly one, then connect the selected regional server.',
-      codex: 'Catalyst MCP regional policy is not valid. Do not invoke ZohoMCP_* tools until the user explicitly selects exactly one DC and connects its regional server.',
+      codex: 'Catalyst MCP regional policy is not valid. Do not invoke CatalystbyZoho_* tools until the user explicitly selects exactly one DC and connects its regional server.',
     });
   }
 

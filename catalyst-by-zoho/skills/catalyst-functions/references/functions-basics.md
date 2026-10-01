@@ -1,6 +1,6 @@
 > **⚠️ PRE-FLIGHT (once per session):**
 >
-> **MCP gate first** — confirm the `ZohoMCP_*` meta-tools (`ZohoMCP_getSchema`, `ZohoMCP_executeTool`, `ZohoMCP_listTools`, `ZohoMCP_getFeatures`) are present in the tool list — that is the "MCP connected" signal (the `CatalystbyZoho_*` names never appear as tools). If they are NOT present, STOP: do not run CLI commands or scaffold files; guide the user through Zoho MCP setup (see the SKILL.md setup instructions) and resume only once they appear.
+> **MCP gate first** — confirm the selected server exposes `CatalystbyZoho_*` tools directly or `ZohoMCP_*` meta-tools for dynamic discovery. If neither is available, STOP: do not run CLI commands or scaffold files; guide the user through Zoho MCP setup and resume only when the selected server's tools are available.
 >
 > **Then run the canonical readiness gate** → `../../catalyst-basics/references/preflight.md`. It establishes + verifies org/project and covers scaffolding a missing project via `catalyst init --org <orgId> -p <projectId> -ni` (never interactive; never hand-create `.catalystrc`/`catalyst.json`).
 >

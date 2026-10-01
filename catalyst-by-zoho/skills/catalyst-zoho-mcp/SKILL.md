@@ -8,12 +8,12 @@ metadata:
 
 ## How It Works
 
-1. **Check if MCP is connected** — Look for the `ZohoMCP_*` **meta-tools** (`ZohoMCP_getSchema`, `ZohoMCP_executeTool`, `ZohoMCP_listTools`, `ZohoMCP_getFeatures`) in your tool list. Their presence is the connectivity signal. The `CatalystbyZoho_*` names are **not** shown as tools — they are `tool_name` values passed to `ZohoMCP_executeTool`.
+1. **Check if MCP is connected** — Look for directly callable `CatalystbyZoho_*` tools from the selected server. A dynamic-discovery Zoho MCP server may expose `ZohoMCP_*` meta-tools instead. Choose the calling pattern by the available tools, not the URL.
 
 2. **⛔ MCP NOT connected — HARD STOP.**
    Do NOT write any code, create any files, or call any SDK.
   In Codex, load `catalyst-switch-dc`, require an explicit regional DC, apply the supported plugin-policy configuration, and connect the selected regional server. In other clients, load `references/zoho-mcp.md` and follow that client's setup path.
-   Do not proceed to step 3 until the `ZohoMCP_*` meta-tools are present in the tool list (this is the "MCP connected" signal — the `CatalystbyZoho_*` names never appear as tools).
+  Do not proceed to step 3 until the selected server's `CatalystbyZoho_*` tools (or, for a dynamic-discovery server, `ZohoMCP_*` meta-tools) are available.
 
 3. **DC switch request?** — If the user asks to switch data centers in Codex (e.g. "connect to IN DC", "switch to EU"), load `catalyst-switch-dc`. It updates only supported user-level plugin policy, never the installed `.mcp.json`. Do not use the old connection; connect and verify the selected regional server before further MCP operations. For other clients, load `references/dc-switching.md`.
 
@@ -23,7 +23,7 @@ metadata:
 
 6. **If the query involves DataStore** (create table, add columns, query data) — also load `references/mcp-datastore.md`.
 
-7. **Answer** — Invoke the appropriate `CatalystbyZoho_*` operation via `ZohoMCP_executeTool` (passing its name as the `tool_name` argument; fetch its schema first with `ZohoMCP_getSchema`). Show the user which operation was called and what it returned.
+7. **Answer** — Call the appropriate visible `CatalystbyZoho_*` tool directly using its exposed argument schema. Only on a dynamic-discovery server, fetch its schema with `ZohoMCP_getSchema` and invoke it via `ZohoMCP_executeTool`. Show the user which operation was called and what it returned.
 
 ## Triggers
 

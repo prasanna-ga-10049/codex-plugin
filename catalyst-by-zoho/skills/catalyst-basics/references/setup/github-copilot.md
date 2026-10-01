@@ -26,7 +26,7 @@ First complete the **Personal MCP Setup** in `setup-common.md` to get your Zoho 
 
 Alternatively, configure globally via **VS Code Settings → MCP** (search "MCP" in Settings UI).
 
-After saving, VS Code will prompt you to start the MCP server. Accept. Confirm it's running via **View → Output → MCP Server: catalyst-by-zoho**.
+After saving, VS Code will prompt you to start the MCP server. Accept. Confirm it's running via **View → Output → MCP Server: catalyst-by-zoho**. Check the actual tool list: call visible `CatalystbyZoho_*` tools directly, or follow the `ZohoMCP_*` dynamic-discovery flow if only those meta-tools appear.
 
 ## Common Errors (GitHub Copilot)
 
@@ -35,5 +35,5 @@ See `setup-common.md` for errors common to all IDEs. Copilot-specific:
 | Error | Cause | Fix |
 |-------|-------|-----|
 | MCP server not starting | URL in `.vscode/mcp.json` is a placeholder | Replace the placeholder with your actual URL from mcp.zoho.com |
-| `ZohoMCP_*` meta-tools not appearing in Copilot | `.vscode/mcp.json` not detected or URL invalid | Check the MCP Output channel for errors; verify the URL is your actual Zoho MCP URL. (Only the `ZohoMCP_*` meta-tools appear — the `CatalystbyZoho_*` names never show in the tool list.) |
+| Expected MCP tools not appearing in Copilot | `.vscode/mcp.json` not detected or URL invalid | Check the MCP Output channel and your URL. Expect either directly callable `CatalystbyZoho_*` tools or `ZohoMCP_*` meta-tools, depending on the server. |
 | Wrong environment targeted | Zoho MCP defaults to Development | Switch explicitly in the Zoho MCP console if needed |
